@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Iterator
 from PyPDF2 import PdfReader, PdfWriter
 from PyPDF2.generic import IndirectObject
 from pathlib import Path
@@ -24,9 +24,9 @@ class AddCatalog:
         page_name = page_name.strip()
         # 将页面编号转换为索引并加上页码偏移量，从0开始计数
         page_num = int(page_num.strip()) + self.offset - 1
-        return (page_name, page_num)
+        return page_name, page_num
 
-    def catalog_add_offset(self) -> Generator[tuple[str, int]]:
+    def catalog_add_offset(self) -> Iterator[tuple[str, int]]:
         """
         遍历目录字符串(catalog_str), 将其按行分割, 调用page_add_offset方法对行进行处理.
         """
@@ -71,43 +71,37 @@ class AddCatalog:
 
 
 if __name__ == "__main__":
-    pdf = Path(r"D:\study\programming\sourse.pdf")
-    '''
-    目录格式如下
+    pdf = Path(r".\sourse.pdf")
     catalog_str = """
-    封面 P-7
-    前言 P-4
-    目录 P-2
-    chapter 1 源石, 天灾, 矿石病 P1
-        1.1源石 P2
-        1.2源石技艺 P9
-        1.3天灾 P15
-            1.3.1天灾信使 P21
-        1.4矿石病 P25
-    chapter 2 泰拉科技 P33
-        2.1 源石技术 P34
-        2.2 工业科技：移动城市 P42
-            2.2.1 第一座现代移动城市 P51
-        2.3 武器与装备 P53
+    女儿 P1
+      .术士 P1
+        ..精零 P1
+        ..精一 P2
+        ..精二 P3
+        ..皮肤 P4
+          ...报童 P4
+          ...见习联结者 P5
+          ...播种者 P6
+      .近卫 P7
+        ..精二 P7
+        ..皮肤 P8
+          ...触及星辰 P8
+      .医疗 P9
+        ..精二 P9
+        ..皮肤 P10
+          ...寰宇独奏 P10
+    老婆 P11
+      .术士 P11
+        ..精一 P11
+        ..精二 P12
+        ..皮肤 P13
+          ...夏卉 FA018 P13
+          ...绵绒小魔女 P14
+      .医疗 P15
+        ..精一 P15
+        ..精二 P16
+        ..皮肤 P17
+          ...远行前的野餐 P17
     """
-    '''
-    catalog_str = """
-    封面 P1
-    版权页 P3
-    前言 P4
-    目录 P9
-    一 概率论的基本概念 P13
-        1.1 随机试验 P13
-        1.2 样本空间、随机事件 P14
-        1.3 频率与概率 P17
-        1.4 等可能模型（古典模型） P21
-        1.5 条件概率 P27
-        1.6 独立性 P33
-        小结 P36
-        习题 P37
-    二 随机变量及其分布 P42
-        2.1 随机变量 P42
-        2.2 离散型随机变量及其分布律 P44
-    """
-    Catalog = AddCatalog(catalog_str=catalog_str, pdf_path=pdf, offset=0)
+    Catalog = AddCatalog(catalog_str=catalog_str, pdf_path=pdf)
     Catalog.main()
